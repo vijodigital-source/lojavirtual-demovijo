@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pet Quintal · Cardápio online (demo)</title>
+<style>
+:root{--bg:#f6f3ec;--surface:#fff;--ink:#1f2a24;--mute:#66726b;--line:#e4ded0;--brand:#1f6b4a;--brand-ink:#fff;--accent:#f2b134;--danger:#b3372b;--ok:#1f6b4a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a16;--surface:#1d261f;--ink:#eef2ee;--mute:#9aa8a0;--line:#2f3b33;--brand:#5fc08f;--brand-ink:#0f1a13;--accent:#f2b134;--danger:#ff8a7c;--ok:#5fc08f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141a16;--surface:#1d261f;--ink:#eef2ee;--mute:#9aa8a0;--line:#2f3b33;--brand:#5fc08f;--brand-ink:#0f1a13;--accent:#f2b134;--danger:#ff8a7c;--ok:#5fc08f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;gap:12px;padding:12px 16px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--brand);z-index:30}
+.logo{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:1.35rem;flex:1;letter-spacing:.2px}
+.logo small{display:block;font-family:"Trebuchet MS",sans-serif;font-size:.72rem;font-weight:400;opacity:.85}
+.cartbtn{background:var(--accent);color:#2a1f00;border:0;border-radius:999px;padding:10px 16px;font-weight:700;display:flex;gap:8px;align-items:center}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.hero{display:grid;gap:6px;padding:20px 0 8px}
+.hero h1{font-family:Georgia,serif;font-size:clamp(1.6rem,5vw,2.4rem);margin:0;line-height:1.15}
+.hero p{margin:0;color:var(--mute);max-width:60ch}
+.info{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.85rem}
+.tools{display:grid;gap:10px;margin:14px 0}
+.search{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.thumb{height:120px;display:grid;place-items:center;font-size:3.4rem;position:relative}
+.tag{position:absolute;top:8px;left:8px;background:var(--accent);color:#2a1f00;font-size:.72rem;font-weight:700;border-radius:6px;padding:2px 8px}
+.body{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.body h3{margin:0;font-size:1rem}
+.body p{margin:0;color:var(--mute);font-size:.85rem;flex:1}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+.price b{font-size:1.15rem}
+.price s{color:var(--mute);font-size:.85rem}
+.add{margin-top:8px;border:0;border-radius:10px;padding:10px;background:var(--brand);color:var(--brand-ink);font-weight:700}
+.empty{color:var(--mute);padding:30px 0;text-align:center}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.qty button{border:0;background:transparent;width:34px;height:34px;font-size:1.1rem}
+.qty span{min-width:28px;text-align:center}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:none}
+.mask.on{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--bg);z-index:50;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s}
+.drawer.on{transform:none}
+@media (prefers-reduced-motion:reduce){.drawer{transition:none}}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;border-bottom:1px solid var(--line)}
+.dh h2{margin:0;font-size:1.15rem;font-family:Georgia,serif}
+.x{border:0;background:transparent;font-size:1.6rem;line-height:1}
+.db{flex:1;overflow:auto;padding:14px 16px}
+.df{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+.item{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.item .em{font-size:1.9rem;text-align:center}
+.item small{color:var(--mute)}
+.row{display:flex;justify-content:space-between;margin:3px 0}
+.row.total{font-size:1.2rem;font-weight:700;margin-top:8px}
+.btn{width:100%;border:0;border-radius:12px;padding:14px;font-weight:700;background:var(--brand);color:var(--brand-ink);margin-top:10px}
+.btn.wa{background:#1fa855;color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+fieldset{border:1px solid var(--line);border-radius:12px;margin:0 0 14px;padding:12px;background:var(--surface)}
+legend{padding:0 6px;font-weight:700}
+label{display:block;font-size:.85rem;color:var(--mute);margin:8px 0 3px}
+input[type=text],input[type=tel],select,textarea{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;margin-top:8px;color:var(--ink);font-size:1rem;background:var(--bg)}
+.opt input{accent-color:var(--brand)}
+.err{color:var(--danger);font-size:.82rem;min-height:1em}
+.bad{border-color:var(--danger)!important}
+.note{font-size:.8rem;color:var(--mute);margin-top:8px}
+.coupon{display:flex;gap:8px}
+.coupon input{flex:1}
+.coupon button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 14px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;z-index:60;font-size:.9rem;display:none}
+.done{text-align:center;padding:30px 10px}
+.done .big{font-size:3rem}
+footer{color:var(--mute);font-size:.8rem;text-align:center;padding:24px 16px 40px}
+.demo{background:var(--accent);color:#2a1f00;text-align:center;font-size:.8rem;padding:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:var(--brand);color:var(--brand-ink);padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(0,0,0,.2);font-weight:700;font-size:1.05rem;text-align:left;width:100%}
+.bar[hidden]{display:none}
+.bar small{display:block;font-weight:400;opacity:.9;font-size:.9rem}
+.bar .go{background:var(--accent);color:#2a1f00;border-radius:999px;padding:12px 22px}
+@keyframes bump{50%{transform:scale(1.03)}}
+.bar.bump{animation:bump .25s}
+@media (prefers-reduced-motion:reduce){.bar.bump{animation:none}}
+body.hasbar{padding-bottom:84px}
+footer a{color:var(--brand);font-weight:700}
+</style>
+</head>
+<body>
+<div class="demo">Loja demonstrativa: produtos, preços e telefone são fictícios.</div>
+<header class="top">
+  <div class="logo">Pet Quintal<small>Petshop &amp; Delivery</small></div>
+  <button class="cartbtn" id="openCart" aria-label="Abrir carrinho">🛒 <span id="cartCount">0</span> · <span id="cartTotalTop">R$ 0,00</span></button>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Peça rápido, receba em casa.</h1>
+    <p>Escolha os produtos, preencha seus dados e envie o pedido direto para o WhatsApp da loja. A equipe confirma o valor final e o prazo.</p>
+    <div class="info">
+      <span class="pill">🕘 Seg a sáb, 8h às 19h</span>
+      <span class="pill">🛵 Entrega em 40 a 90 min</span>
+      <span class="pill">🎁 Frete grátis acima de R$ 150</span>
+    </div>
+  </section>
+
+  <div class="tools">
+    <input class="search" id="q" type="search" placeholder="Buscar produto (ex.: ração, areia, coleira)" aria-label="Buscar produto">
+    <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Nenhum produto encontrado. Tente outro termo ou categoria.</div>
+</main>
+<footer>Pet Quintal · CNPJ 00.000.000/0001-00 · Rua das Palmeiras, 120, Centro (dados fictícios)<br>Desenvolvido por <a href="https://instagram.com/vijodigital" target="_blank" rel="noopener">Vijo Digital</a></footer>
+
+<div class="mask" id="mask"></div>
+<aside class="drawer" id="drawer" aria-label="Carrinho e pedido" aria-hidden="true">
+  <div class="dh"><h2 id="dtitle">Seu carrinho</h2><button class="x" id="close" aria-label="Fechar">×</button></div>
+  <div class="db" id="db"></div>
+  <div class="df" id="df"></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+<button class="bar" id="bar" hidden><span id="barInfo"></span><span class="go">Finalizar pedido</span></button>
+
+<script>
+// ===== CONFIGURAÇÃO (trocar por dados reais do cliente) =====
+var CONFIG={loja:"Pet Quintal",whatsapp:"5521993425493",freteGratisAcima:150,taxaEntrega:9.9,pedidoMinimo:30,cupons:{PET10:{tipo:"pct",valor:10,desc:"10% de desconto"},BEMVINDO:{tipo:"fixo",valor:15,desc:"R$ 15 de desconto"}}};
+
+var CATS=["Todos","Rações","Petiscos","Higiene","Acessórios","Brinquedos","Farmácia"];
+var P=[
+{id:1,n:"Ração Premium Cães Adultos 10kg",c:"Rações",p:189.9,o:219.9,e:"🐕",bg:"#f3e3c3",d:"Frango e arroz, sem corantes",t:"Mais vendido"},
+{id:2,n:"Ração Filhotes Cães 3kg",c:"Rações",p:79.9,e:"🐶",bg:"#e5efd9",d:"Rico em DHA para o crescimento"},
+{id:3,n:"Ração Gatos Castrados 3kg",c:"Rações",p:94.5,o:109.9,e:"🐈",bg:"#e3e8f4",d:"Controle de peso e saúde urinária",t:"Oferta"},
+{id:4,n:"Ração Gatos Filhotes 1,5kg",c:"Rações",p:52.9,e:"🐱",bg:"#f4e1e6",d:"Salmão e leite, alta digestibilidade"},
+{id:5,n:"Bifinho Sabor Carne 500g",c:"Petiscos",p:24.9,e:"🥩",bg:"#f1dcd0",d:"Macio, ótimo para adestramento"},
+{id:6,n:"Osso Natural Defumado",c:"Petiscos",p:12.5,e:"🦴",bg:"#efe6d4",d:"Ajuda na limpeza dos dentes"},
+{id:7,n:"Sachê Gatos Atum 85g",c:"Petiscos",p:3.9,e:"🐟",bg:"#dfeaf3",d:"Alimento úmido complementar"},
+{id:8,n:"Shampoo Neutro 500ml",c:"Higiene",p:32.9,e:"🧴",bg:"#dcefee",d:"Para cães e gatos, pH balanceado"},
+{id:9,n:"Areia Higiênica 4kg",c:"Higiene",p:21.9,e:"🧺",bg:"#ece7dd",d:"Granulado fino, controla odores",t:"Oferta",o:26.9},
+{id:10,n:"Tapete Higiênico 30 un.",c:"Higiene",p:69.9,e:"🧻",bg:"#e8ecf1",d:"Super absorvente com atrativo"},
+{id:11,n:"Coleira com Guia Ajustável",c:"Acessórios",p:39.9,e:"🦮",bg:"#f0e0c6",d:"Nylon reforçado, tamanhos P ao G"},
+{id:12,n:"Cama Pet Confort M",c:"Acessórios",p:119.9,o:149.9,e:"🛏️",bg:"#e9e1f0",d:"Lavável, base antiderrapante",t:"Oferta"},
+{id:13,n:"Comedouro Inox Antiderrapante",c:"Acessórios",p:27.9,e:"🥣",bg:"#e4e9ea",d:"Fácil de higienizar"},
+{id:14,n:"Bolinha Maciça de Borracha",c:"Brinquedos",p:14.9,e:"🎾",bg:"#e8f0c9",d:"Resistente para roer"},
+{id:15,n:"Arranhador para Gatos",c:"Brinquedos",p:64.9,e:"🐾",bg:"#efdfd0",d:"Sisal natural, 60 cm"},
+{id:16,n:"Antipulgas Cães 10 a 25kg",c:"Farmácia",p:74.9,e:"💊",bg:"#e2efe6",d:"Proteção por 3 meses",t:"Mais vendido"}
+];
+
+var cart=load();var cat="Todos";var step="cart";var cupom=null;
+var $=function(s){return document.querySelector(s)};
+function money(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function load(){try{return JSON.parse(localStorage.getItem("pq_cart")||"{}")}catch(e){return {}}}
+function save(){try{localStorage.setItem("pq_cart",JSON.stringify(cart))}catch(e){}}
+function prod(id){return P.filter(function(x){return x.id==id})[0]}
+function toast(t){var el=$("#toast");el.textContent=t;el.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){el.style.display="none"},1800)}
+
+function renderChips(){$("#chips").innerHTML=CATS.map(function(c){return '<button class="chip" aria-pressed="'+(c===cat)+'" data-c="'+c+'">'+c+'</button>'}).join("")}
+function renderGrid(){
+  var q=$("#q").value.trim().toLowerCase();
+  var list=P.filter(function(x){return (cat==="Todos"||x.c===cat)&&(!q||(x.n+" "+x.d).toLowerCase().indexOf(q)>-1)});
+  $("#empty").hidden=list.length>0;
+  $("#grid").innerHTML=list.map(function(x){
+    return '<article class="card"><div class="thumb" style="background:'+x.bg+'" aria-hidden="true">'+(x.t?'<span class="tag">'+x.t+'</span>':'')+x.e+'</div><div class="body"><h3>'+x.n+'</h3><p>'+x.d+'</p><div class="price"><b>'+money(x.p)+'</b>'+(x.o?'<s>'+money(x.o)+'</s>':'')+'</div><button class="add" data-add="'+x.id+'">Adicionar</button></div></article>'}).join("");
+}
+function totals(){
+  var sub=0,n=0;Object.keys(cart).forEach(function(id){var p=prod(id);sub+=p.p*cart[id];n+=cart[id]});
+  var desc=0;if(cupom){desc=cupom.tipo==="pct"?sub*cupom.valor/100:Math.min(cupom.valor,sub)}
+  return {sub:sub,n:n,desc:desc,base:sub-desc}
+}
+function frete(t,entrega){if(entrega==="retirada")return 0;return t.base>=CONFIG.freteGratisAcima?0:CONFIG.taxaEntrega}
+function badge(){var t=totals();$("#cartCount").textContent=t.n;$("#cartTotalTop").textContent=money(t.sub);var b=$("#bar");b.hidden=!t.n;document.body.classList.toggle("hasbar",t.n>0);$("#barInfo").innerHTML=t.n+(t.n===1?" item":" itens")+"<small>"+money(t.sub)+"</small>"}
+function bump(){var b=$("#bar");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+
+function openD(){$("#drawer").classList.add("on");$("#mask").classList.add("on");$("#drawer").setAttribute("aria-hidden","false");renderD()}
+function closeD(){$("#drawer").classList.remove("on");$("#mask").classList.remove("on");$("#drawer").setAttribute("aria-hidden","true")}
+
+function renderD(){
+  var t=totals();
+  if(step==="done")return;
+  if(!t.n){step="cart";$("#dtitle").textContent="Seu carrinho";$("#db").innerHTML='<div class="empty">Seu carrinho está vazio.<br>Adicione produtos para começar.</div>';$("#df").innerHTML='<button class="btn ghost" id="keep">Ver produtos</button>';return}
+  if(step==="cart"){
+    $("#dtitle").textContent="Seu carrinho";
+    $("#db").innerHTML=Object.keys(cart).map(function(id){var p=prod(id);return '<div class="item"><div class="em">'+p.e+'</div><div><b>'+p.n+'</b><br><small>'+money(p.p)+' cada</small></div><div><div class="qty"><button data-m="'+id+'" aria-label="Diminuir">−</button><span>'+cart[id]+'</span><button data-p="'+id+'" aria-label="Aumentar">+</button></div></div></div>'}).join("")+
+    '<label for="cp">Cupom de desconto</label><div class="coupon"><input type="text" id="cp" placeholder="Ex.: PET10" value="'+(cupom?cupom.code:"")+'"><button id="applyCp">Aplicar</button></div><div class="err" id="cpm">'+(cupom?cupom.desc+' aplicado':'')+'</div><div class="note">Cupons de teste: PET10 e BEMVINDO.</div>';
+    $("#df").innerHTML='<div class="row"><span>Subtotal</span><span>'+money(t.sub)+'</span></div>'+(t.desc?'<div class="row"><span>Desconto</span><span>− '+money(t.desc)+'</span></div>':'')+'<div class="row total"><span>Total parcial</span><span>'+money(t.base)+'</span></div>'+(t.base<CONFIG.pedidoMinimo?'<div class="err">Pedido mínimo: '+money(CONFIG.pedidoMinimo)+'</div>':'')+'<button class="btn" id="next" '+(t.base<CONFIG.pedidoMinimo?'disabled':'')+'>Continuar</button>';
+  }
+  if(step==="form"){
+    $("#dtitle").textContent="Seus dados";
+    $("#db").innerHTML=formHtml();
+    updateSummary();
+  }
+}
+function formHtml(){
+  return '<form id="f" novalidate>'+
+  '<fieldset><legend>Quem vai receber</legend><label for="nome">Nome completo</label><input type="text" id="nome" autocomplete="name"><div class="err" data-e="nome"></div><label for="tel">Telefone com DDD</label><input type="tel" id="tel" inputmode="tel" placeholder="(21) 99999-9999" autocomplete="tel"><div class="err" data-e="tel"></div></fieldset>'+
+  '<fieldset><legend>Como receber</legend><label class="opt"><input type="radio" name="ent" value="entrega" checked> Entrega em casa</label><label class="opt"><input type="radio" name="ent" value="retirada"> Retirar na loja (sem taxa)</label>'+
+  '<div id="addr"><div class="two"><div><label for="cep">CEP</label><input type="text" id="cep" inputmode="numeric" placeholder="00000-000"></div><div><label for="num">Número</label><input type="text" id="num"></div></div><label for="rua">Rua</label><input type="text" id="rua"><div class="two"><div><label for="bai">Bairro</label><input type="text" id="bai"></div><div><label for="comp">Complemento</label><input type="text" id="comp"></div></div><div class="err" data-e="end"></div></div></fieldset>'+
+  '<fieldset><legend>Pagamento</legend><label class="opt"><input type="radio" name="pg" value="Pix" checked> Pix (chave enviada no WhatsApp)</label><label class="opt"><input type="radio" name="pg" value="Cartão na entrega"> Cartão na entrega</label><label class="opt"><input type="radio" name="pg" value="Dinheiro"> Dinheiro</label><div id="troco" hidden><label for="tr">Troco para quanto?</label><input type="text" id="tr" inputmode="decimal" placeholder="Ex.: 200"></div></fieldset>'+
+  '<fieldset><legend>Observações</legend><textarea id="obs" rows="2" placeholder="Ex.: portão azul, interfone com defeito"></textarea></fieldset></form>';
+}
+function val(){return {ent:document.querySelector('input[name=ent]:checked').value,pg:document.querySelector('input[name=pg]:checked').value}}
+function updateSummary(){
+  var t=totals(),v=val(),f=frete(t,v.ent);
+  $("#df").innerHTML='<div class="row"><span>Produtos</span><span>'+money(t.sub)+'</span></div>'+(t.desc?'<div class="row"><span>Desconto</span><span>− '+money(t.desc)+'</span></div>':'')+'<div class="row"><span>Entrega</span><span>'+(f?money(f):'Grátis')+'</span></div><div class="row total"><span>Total</span><span>'+money(t.base+f)+'</span></div><button class="btn wa" id="send">Enviar pedido no WhatsApp</button><button class="btn ghost" id="back">Voltar ao carrinho</button>';
+}
+function mark(id,msg){var el=document.getElementById(id);if(el)el.classList.add("bad");var m=document.querySelector('[data-e="'+(id==="rua"||id==="num"||id==="bai"?"end":id)+'"]');if(m)m.textContent=msg}
+function validate(){
+  document.querySelectorAll(".bad").forEach(function(e){e.classList.remove("bad")});document.querySelectorAll(".err[data-e]").forEach(function(e){e.textContent=""});
+  var ok=true,v=val();
+  if($("#nome").value.trim().split(/\s+/).length<2){mark("nome","Informe nome e sobrenome.");ok=false}
+  var d=$("#tel").value.replace(/\D/g,"");if(d.length<10||d.length>11){mark("tel","Informe o telefone com DDD.");ok=false}
+  if(v.ent==="entrega"&&(!$("#rua").value.trim()||!$("#num").value.trim()||!$("#bai").value.trim())){["rua","num","bai"].forEach(function(i){if(!$("#"+i).value.trim())$("#"+i).classList.add("bad")});mark("rua","Preencha rua, número e bairro.");ok=false}
+  if(!ok){var b=document.querySelector(".bad");if(b)b.focus()}
+  return ok;
+}
+function buildMsg(){
+  var t=totals(),v=val(),f=frete(t,v.ent),L=[];
+  var num=Date.now().toString().slice(-6);
+  L.push("*Novo pedido #"+num+" · "+CONFIG.loja+"*","");
+  L.push("*Itens*");
+  Object.keys(cart).forEach(function(id){var p=prod(id);L.push(cart[id]+"x "+p.n+" — "+money(p.p*cart[id]))});
+  L.push("","Subtotal: "+money(t.sub));
+  if(t.desc)L.push("Desconto ("+cupom.code+"): − "+money(t.desc));
+  L.push("Entrega: "+(f?money(f):"Grátis"),"*Total: "+money(t.base+f)+"*","");
+  L.push("*Cliente*","Nome: "+$("#nome").value.trim(),"Telefone: "+$("#tel").value.trim(),"");
+  if(v.ent==="entrega"){L.push("*Entrega*","Endereço: "+$("#rua").value.trim()+", "+$("#num").value.trim()+($("#comp").value.trim()?" - "+$("#comp").value.trim():"")+" - "+$("#bai").value.trim()+($("#cep").value.trim()?" (CEP "+$("#cep").value.trim()+")":""))}
+  else L.push("*Retirada na loja*");
+  L.push("","*Pagamento:* "+v.pg+(v.pg==="Dinheiro"&&$("#tr").value.trim()?" (troco para R$ "+$("#tr").value.trim()+")":""));
+  if($("#obs").value.trim())L.push("Obs.: "+$("#obs").value.trim());
+  return {text:L.join("\n"),num:num,total:t.base+f};
+}
+function send(){
+  if(!validate())return;
+  var m=buildMsg();
+  var url="https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent(m.text);
+  step="done";
+  $("#dtitle").textContent="Pedido enviado";
+  $("#db").innerHTML='<div class="done"><div class="big">✅</div><h3>Quase lá!</h3><p>O WhatsApp da loja deve abrir com o pedido #'+m.num+' pronto. Basta tocar em enviar. Se não abriu, use o botão abaixo.</p><a class="btn wa" style="display:block;text-decoration:none" href="'+url+'" target="_blank" rel="noopener">Abrir WhatsApp</a></div>';
+  $("#df").innerHTML='<button class="btn ghost" id="newOrder">Fazer novo pedido</button>';
+  window.open(url,"_blank","noopener");
+  cart={};cupom=null;save();badge();
+}
+
+document.addEventListener("click",function(e){
+  var t=e.target.closest("button,a");if(!t)return;
+  if(t.dataset.c){cat=t.dataset.c;renderChips();renderGrid()}
+  if(t.dataset.add){cart[t.dataset.add]=(cart[t.dataset.add]||0)+1;save();badge();bump();toast("Adicionado ao carrinho")}
+  if(t.dataset.p){cart[t.dataset.p]++;save();badge();renderD()}
+  if(t.dataset.m){cart[t.dataset.m]--;if(cart[t.dataset.m]<=0)delete cart[t.dataset.m];save();badge();renderD()}
+  if(t.id==="openCart"||t.id==="bar"){if(step==="done")step="cart";openD()}
+  if(t.id==="close"||t.id==="keep")closeD();
+  if(t.id==="next"){step="form";renderD()}
+  if(t.id==="back"){step="cart";renderD()}
+  if(t.id==="send")send();
+  if(t.id==="newOrder"){step="cart";closeD()}
+  if(t.id==="applyCp"){var c=$("#cp").value.trim().toUpperCase();if(CONFIG.cupons[c]){cupom=Object.assign({code:c},CONFIG.cupons[c]);renderD()}else{cupom=null;$("#cpm").textContent="Cupom inválido.";}}
+});
+$("#mask").addEventListener("click",closeD);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeD()});
+document.addEventListener("change",function(e){
+  if(e.target.name==="ent"){$("#addr").hidden=e.target.value==="retirada";updateSummary()}
+  if(e.target.name==="pg"){$("#troco").hidden=e.target.value!=="Dinheiro"}
+});
+document.addEventListener("input",function(e){
+  if(e.target.id==="q")renderGrid();
+  if(e.target.id==="tel"){var d=e.target.value.replace(/\D/g,"").slice(0,11);e.target.value=d.length>6?"("+d.slice(0,2)+") "+d.slice(2,d.length-4)+"-"+d.slice(-4):d.length>2?"("+d.slice(0,2)+") "+d.slice(2):d}
+  if(e.target.id==="cep"){var c=e.target.value.replace(/\D/g,"").slice(0,8);e.target.value=c.length>5?c.slice(0,5)+"-"+c.slice(5):c}
+});
+renderChips();renderGrid();badge();
+</script>
+</body>
+</html>
